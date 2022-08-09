@@ -18,8 +18,6 @@ def get_password(project_id, secret_id, version_id):
     can be a version number as a string (e.g. "5") or an alias (e.g. "latest").
     """
     
-
-
     # Create the Secret Manager client.
     client = secretmanager.SecretManagerServiceClient()
 
@@ -27,7 +25,10 @@ def get_password(project_id, secret_id, version_id):
     name = f"projects/{project_id}/secrets/{secret_id}/versions/{version_id}"
 
     # Access the secret version.
+    # works for python code on GCP VM
     # response = client.access_secret_version(request={"name": name})
+    
+    # works for AF on GCP VM
     response = client.access_secret_version(name=name)
 
     # Verify payload checksum.
@@ -44,15 +45,6 @@ def get_password(project_id, secret_id, version_id):
     # return format(payload)
     
     # print("Plaintext: {}".format(payload))
-
-
-
-
-
-
-
-
-
 
 
 def open_session(ti):
@@ -170,9 +162,6 @@ close_session = PythonOperator(
     dag=dag_python
     )
 
-
-# let's try this
-# open_session = open_session()
 open_session >> run_a_task >> close_session
 
 # two links to pass params
